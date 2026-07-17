@@ -7,7 +7,7 @@ export default function Customers() {
   useEffect(() => {
     api.get("/customers")
       .then((response) => {
-        setCustomers(response.data);
+        setCustomers(response.data.data || []);
       })
       .catch((error) => {
         console.error(error);
@@ -17,17 +17,17 @@ export default function Customers() {
   return (
     <div>
       <h2>Customers</h2>
-
-      <table border="1">
+      <table border="1" cellPadding="6">
         <thead>
           <tr>
             <th>ID</th>
             <th>First Name</th>
             <th>Last Name</th>
             <th>Email</th>
+            <th>City</th>
+            <th>Country</th>
           </tr>
         </thead>
-
         <tbody>
           {customers.map((customer) => (
             <tr key={customer.customer_id}>
@@ -35,6 +35,8 @@ export default function Customers() {
               <td>{customer.first_name}</td>
               <td>{customer.last_name}</td>
               <td>{customer.email}</td>
+              <td>{customer.city}</td>
+              <td>{customer.country}</td>
             </tr>
           ))}
         </tbody>
