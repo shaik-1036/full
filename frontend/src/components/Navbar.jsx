@@ -12,6 +12,7 @@ const links = [
   { to: '/inventory', label: 'Inventory' },
   { to: '/shipments', label: 'Shipments' },
   { to: '/returns', label: 'Returns' },
+  { to: '/analytics', label: 'Analytics' },
   { to: '/metrics', label: 'Metrics' },
 ];
 

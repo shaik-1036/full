@@ -27,6 +27,7 @@ const refreshRoutes = require("./routes/refreshRoutes");
 const authMiddleware = require("./middleware/auth");
 const requestLogger = require("./middleware/requestLogger");
 const { refreshData } = require("./services/scheduledDataService");
+const { startRenderWakeService } = require("./services/renderWakeService");
 
 const app = express();
 
@@ -138,6 +139,7 @@ initializeDatabase()
     app.listen(process.env.PORT || 5000, () => {
       console.log("Server started");
       startScheduledRefresh();
+      startRenderWakeService(app);
     });
   })
   .catch((error) => {

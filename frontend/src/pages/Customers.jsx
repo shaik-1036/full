@@ -1,12 +1,17 @@
 import { useEffect, useState } from 'react';
 import api from '../services/api';
+import { filterRecords } from '../utils/filterData';
 
 export default function Customers() {
   const [customers, setCustomers] = useState([]);
+  const [query, setQuery] = useState('');
+  const [dateFilter, setDateFilter] = useState('all');
 
   useEffect(() => {
     api.get('/customers').then((response) => setCustomers(response.data.data || [])).catch(console.error);
   }, []);
+
+  const visibleCustomers = filterRecords(customers, { query, dateFilter });
 
   return (
     <div className="card">
@@ -15,7 +20,16 @@ export default function Customers() {
           <p className="eyebrow">Directory</p>
           <h2>Customers</h2>
         </div>
-        <span className="pill">{customers.length} profiles</span>
+        <span className="pill">{visibleCustomers.length} shown</span>
+      </div>
+      <div className="toolbar">
+        <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search customers" />
+        <select value={dateFilter} onChange={(event) => setDateFilter(event.target.value)}>
+          <option value="all">All dates</option>
+          <option value="today">Today</option>
+          <option value="7d">Last 7 days</option>
+          <option value="30d">Last 30 days</option>
+        </select>
       </div>
       <div className="table-wrap">
         <table>
@@ -29,7 +43,7 @@ export default function Customers() {
             </tr>
           </thead>
           <tbody>
-            {customers.map((customer) => (
+            {visibleCustomers.map((customer) => (
               <tr key={customer.customer_id}>
                 <td>{customer.customer_id}</td>
                 <td>{customer.first_name} {customer.last_name}</td>

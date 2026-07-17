@@ -12,6 +12,7 @@ import Inventory from './pages/Inventory';
 import Shipments from './pages/Shipments';
 import Returns from './pages/Returns';
 import Metrics from './pages/Metrics';
+import Analytics from './pages/Analytics';
 import Login from './pages/Login';
 
 function ProtectedRoute({ children }) {
@@ -36,6 +37,7 @@ export default function App() {
         <Route path='/inventory' element={<ProtectedRoute><Inventory /></ProtectedRoute>} />
         <Route path='/shipments' element={<ProtectedRoute><Shipments /></ProtectedRoute>} />
         <Route path='/returns' element={<ProtectedRoute><Returns /></ProtectedRoute>} />
+        <Route path='/analytics' element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
         <Route path='/metrics' element={<ProtectedRoute><Metrics /></ProtectedRoute>} />
       </Routes>
     </Layout>

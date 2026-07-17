@@ -1,12 +1,18 @@
 import { useEffect, useState } from 'react';
 import api from '../services/api';
+import { filterRecords } from '../utils/filterData';
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
+  const [query, setQuery] = useState('');
+  const [dateFilter, setDateFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
 
   useEffect(() => {
     api.get('/orders').then((response) => setOrders(response.data.data || [])).catch(console.error);
   }, []);
+
+  const visibleOrders = filterRecords(orders, { query, dateFilter, statusFilter });
 
   return (
     <div className="card">
@@ -15,7 +21,21 @@ export default function Orders() {
           <p className="eyebrow">Sales</p>
           <h2>Orders</h2>
         </div>
-        <span className="pill">{orders.length} orders</span>
+        <span className="pill">{visibleOrders.length} shown</span>
+      </div>
+      <div className="toolbar">
+        <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search orders" />
+        <select value={dateFilter} onChange={(event) => setDateFilter(event.target.value)}>
+          <option value="all">All dates</option>
+          <option value="today">Today</option>
+          <option value="7d">Last 7 days</option>
+          <option value="30d">Last 30 days</option>
+        </select>
+        <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
+          <option value="all">All statuses</option>
+          <option value="Completed">Completed</option>
+          <option value="Pending">Pending</option>
+        </select>
       </div>
       <div className="table-wrap">
         <table>
@@ -30,7 +50,7 @@ export default function Orders() {
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) => (
+            {visibleOrders.map((order) => (
               <tr key={order.order_id}>
                 <td>{order.order_id}</td>
                 <td>{order.customer_id}</td>
