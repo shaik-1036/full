@@ -15,6 +15,7 @@ export default function Navbar() {
       <Link to='/customers'>Customers</Link>
       <Link to='/products'>Products</Link>
       <Link to='/orders'>Orders</Link>
+      <Link to='/order-items'>Order Items</Link>
       <Link to='/payments'>Payments</Link>
       <Link to='/metrics'>Metrics</Link>
       {token ? <button onClick={logout}>Logout</button> : <Link to='/login'>Login</Link>}

@@ -20,10 +20,13 @@ const warehouseRoutes = require("./routes/warehouseRoutes");
 const inventoryRoutes = require("./routes/inventoryRoutes");
 const shipmentRoutes = require("./routes/shipmentRoutes");
 const returnRoutes = require("./routes/returnRoutes");
+const orderItemRoutes = require("./routes/orderItemRoutes");
 const authRoutes = require("./routes/authRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
+const refreshRoutes = require("./routes/refreshRoutes");
 const authMiddleware = require("./middleware/auth");
 const requestLogger = require("./middleware/requestLogger");
+const { refreshData } = require("./services/scheduledDataService");
 
 const app = express();
 
@@ -43,19 +46,12 @@ const limiter = rateLimit({
 app.use("/api", limiter);
 app.use("/api", requestLogger);
 app.use("/api", (req, res, next) => {
-  if (req.path.startsWith("/auth")) {
-    return next();
-  }
-  return authMiddleware(req, res, next);
-});
-
-app.get("/", (req, res) => {
-  res.json({
   const publicPaths = [
     "/auth",
     "/customers",
     "/products",
     "/orders",
+    "/order-items",
     "/payments",
     "/suppliers",
     "/warehouses",
@@ -70,7 +66,15 @@ app.get("/", (req, res) => {
   if (req.path.startsWith("/auth") || isPublicGetRequest) {
     return next();
   }
-);
+
+  return authMiddleware(req, res, next);
+});
+
+app.get("/", (req, res) => {
+  res.json({
+    application: "Enterprise Data Platform API",
+    status: "Running"
+  });
 });
 
 app.get("/health", (req, res) => {
@@ -82,6 +86,7 @@ app.get("/health", (req, res) => {
 app.use("/api/customers", customerRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/order-items", orderItemRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/suppliers", supplierRoutes);
 app.use("/api/warehouses", warehouseRoutes);
@@ -90,6 +95,7 @@ app.use("/api/shipments", shipmentRoutes);
 app.use("/api/returns", returnRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/refresh", refreshRoutes);
 
 async function initializeDatabase() {
   const ddlPath = path.join(__dirname, "../database/ddl/001_create_tables.sql");
@@ -98,10 +104,24 @@ async function initializeDatabase() {
   console.log("Database schema initialized");
 }
 
+function startScheduledRefresh() {
+  const intervalMs = parseInt(process.env.DATA_REFRESH_INTERVAL_MS || String(24 * 60 * 60 * 1000), 10);
+
+  setInterval(async () => {
+    try {
+      await refreshData();
+      console.log("Nightly data refresh completed");
+    } catch (error) {
+      console.error("Nightly data refresh failed", error);
+    }
+  }, intervalMs);
+}
+
 initializeDatabase()
   .then(() => {
     app.listen(process.env.PORT || 5000, () => {
       console.log("Server started");
+      startScheduledRefresh();
     });
   })
   .catch((error) => {

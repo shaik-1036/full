@@ -10,6 +10,9 @@ create table if not exists customers (
     updated_at timestamp default current_timestamp
 );
 
+alter table customers add column if not exists created_at timestamp default current_timestamp;
+alter table customers add column if not exists updated_at timestamp default current_timestamp;
+
 create table if not exists products (
     product_id bigserial primary key,
     product_name varchar(255),
@@ -20,6 +23,9 @@ create table if not exists products (
     updated_at timestamp default current_timestamp
 );
 
+alter table products add column if not exists created_at timestamp default current_timestamp;
+alter table products add column if not exists updated_at timestamp default current_timestamp;
+
 create table if not exists orders (
     order_id bigserial primary key,
     customer_id bigint,
@@ -29,6 +35,9 @@ create table if not exists orders (
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp
 );
+
+alter table orders add column if not exists created_at timestamp default current_timestamp;
+alter table orders add column if not exists updated_at timestamp default current_timestamp;
 
 create table if not exists order_items (
     order_item_id bigserial primary key,
@@ -49,6 +58,9 @@ create table if not exists payments (
     updated_at timestamp default current_timestamp
 );
 
+alter table payments add column if not exists created_at timestamp default current_timestamp;
+alter table payments add column if not exists updated_at timestamp default current_timestamp;
+
 create table if not exists suppliers (
     supplier_id bigserial primary key,
     supplier_name varchar(255),
@@ -61,6 +73,9 @@ create table if not exists suppliers (
     updated_at timestamp default current_timestamp
 );
 
+alter table suppliers add column if not exists created_at timestamp default current_timestamp;
+alter table suppliers add column if not exists updated_at timestamp default current_timestamp;
+
 create table if not exists warehouses (
     warehouse_id bigserial primary key,
     warehouse_name varchar(255),
@@ -70,6 +85,9 @@ create table if not exists warehouses (
     updated_at timestamp default current_timestamp
 );
 
+alter table warehouses add column if not exists created_at timestamp default current_timestamp;
+alter table warehouses add column if not exists updated_at timestamp default current_timestamp;
+
 create table if not exists inventory (
     inventory_id bigserial primary key,
     product_id bigint,
@@ -78,6 +96,9 @@ create table if not exists inventory (
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp
 );
+
+alter table inventory add column if not exists created_at timestamp default current_timestamp;
+alter table inventory add column if not exists updated_at timestamp default current_timestamp;
 
 create table if not exists shipments (
     shipment_id bigserial primary key,
@@ -89,6 +110,9 @@ create table if not exists shipments (
     updated_at timestamp default current_timestamp
 );
 
+alter table shipments add column if not exists created_at timestamp default current_timestamp;
+alter table shipments add column if not exists updated_at timestamp default current_timestamp;
+
 create table if not exists returns (
     return_id bigserial primary key,
     order_id bigint,
@@ -98,6 +122,9 @@ create table if not exists returns (
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp
 );
+
+alter table returns add column if not exists created_at timestamp default current_timestamp;
+alter table returns add column if not exists updated_at timestamp default current_timestamp;
 
 create table if not exists users (
     user_id bigserial primary key,
