@@ -51,9 +51,26 @@ app.use("/api", (req, res, next) => {
 
 app.get("/", (req, res) => {
   res.json({
-    application: "Enterprise Data Platform API",
-    status: "Running"
-  });
+  const publicPaths = [
+    "/auth",
+    "/customers",
+    "/products",
+    "/orders",
+    "/payments",
+    "/suppliers",
+    "/warehouses",
+    "/inventory",
+    "/shipments",
+    "/returns",
+    "/dashboard/metrics"
+  ];
+
+  const isPublicGetRequest = req.method === "GET" && publicPaths.some((path) => req.path === path || req.path.startsWith(`${path}/`));
+
+  if (req.path.startsWith("/auth") || isPublicGetRequest) {
+    return next();
+  }
+);
 });
 
 app.get("/health", (req, res) => {
