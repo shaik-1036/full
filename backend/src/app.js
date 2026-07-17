@@ -105,16 +105,32 @@ async function initializeDatabase() {
 }
 
 function startScheduledRefresh() {
-  const intervalMs = parseInt(process.env.DATA_REFRESH_INTERVAL_MS || String(24 * 60 * 60 * 1000), 10);
+  const refreshHour = parseInt(process.env.DATA_REFRESH_HOUR || "4", 10);
+  const refreshMinute = parseInt(process.env.DATA_REFRESH_MINUTE || "0", 10);
+  const nextRunAt = new Date();
+  nextRunAt.setHours(refreshHour, refreshMinute, 0, 0);
 
-  setInterval(async () => {
+  if (nextRunAt <= new Date()) {
+    nextRunAt.setDate(nextRunAt.getDate() + 1);
+  }
+
+  const delayMs = Math.max(1000, nextRunAt.getTime() - Date.now());
+
+  const runRefresh = async () => {
     try {
-      await refreshData();
-      console.log("Nightly data refresh completed");
+      const result = await refreshData();
+      console.log("Nightly data refresh completed", result.output || result.message);
     } catch (error) {
       console.error("Nightly data refresh failed", error);
     }
-  }, intervalMs);
+  };
+
+  setTimeout(() => {
+    runRefresh();
+    setInterval(runRefresh, 24 * 60 * 60 * 1000);
+  }, delayMs);
+
+  console.log(`Scheduled nightly refresh for ${String(refreshHour).padStart(2, "0")}:${String(refreshMinute).padStart(2, "0")}`);
 }
 
 initializeDatabase()

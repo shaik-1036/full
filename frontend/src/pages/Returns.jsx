@@ -1,21 +1,21 @@
 import { useEffect, useState } from 'react';
 import api from '../services/api';
 
-export default function OrderItems() {
+export default function Returns() {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    api.get('/order-items').then((response) => setItems(response.data.data || [])).catch(console.error);
+    api.get('/returns').then((response) => setItems(response.data.data || [])).catch(console.error);
   }, []);
 
   return (
     <div className="card">
       <div className="card-header">
         <div>
-          <p className="eyebrow">Sales</p>
-          <h2>Order Items</h2>
+          <p className="eyebrow">Operations</p>
+          <h2>Returns</h2>
         </div>
-        <span className="pill">{items.length} lines</span>
+        <span className="pill">{items.length} records</span>
       </div>
       <div className="table-wrap">
         <table>
@@ -23,19 +23,19 @@ export default function OrderItems() {
             <tr>
               <th>ID</th>
               <th>Order ID</th>
-              <th>Product ID</th>
-              <th>Quantity</th>
-              <th>Unit Price</th>
+              <th>Reason</th>
+              <th>Status</th>
+              <th>Updated</th>
             </tr>
           </thead>
           <tbody>
             {items.map((item) => (
-              <tr key={item.order_item_id}>
-                <td>{item.order_item_id}</td>
+              <tr key={item.return_id}>
+                <td>{item.return_id}</td>
                 <td>{item.order_id}</td>
-                <td>{item.product_id}</td>
-                <td>{item.quantity}</td>
-                <td>${Number(item.unit_price || 0).toFixed(2)}</td>
+                <td>{item.reason}</td>
+                <td>{item.status}</td>
+                <td>{item.updated_at ? new Date(item.updated_at).toLocaleString() : '—'}</td>
               </tr>
             ))}
           </tbody>
