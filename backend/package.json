@@ -4,7 +4,7 @@
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
-    "refresh:nightly": "python3 ../generate_data.py"
+    "refresh:nightly": "python3 generate_data.py"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

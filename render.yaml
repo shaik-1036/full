@@ -3,7 +3,7 @@ services:
     name: enterprise-data-platform
     env: node
     plan: free
-    buildCommand: cd backend && npm install
+    buildCommand: cd backend && npm install && python3 -m pip install --user psycopg2-binary
     startCommand: cd backend && npm start
     envVars:
       - key: NODE_ENV
